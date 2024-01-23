@@ -1,4 +1,4 @@
-<h1>SmartOCR - Advanced Image Processing for Tesseract OCR</h1>
+<h1>SmartOCR - Advanced Image Processing for Tesseract OCR Engine</h1>
 
 
 SmartOCR is an Android Native app that leverages the power of NDK (C++) for advanced image preprocessing, specifically Sauvola Thresholding/Binarization. This preprocessing significantly enhances the results of the Tesseract OCR engine, making it more effective for accurate optical character recognition.
