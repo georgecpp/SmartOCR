@@ -2,10 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="PermissionHandlingTest">
+      <entry key="MainActivityTest">
         <State />
       </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="testImageSelected_displaysInImageView()">
+        <State />
+      </entry>
+      <entry key="testPermissionGranted_opensGallery()">
+        <State />
+      </entry>
+      <entry key="testSelectImageButtonClick_opensGallery()">
+        <State />
+      </entry>
+      <entry key="testSelectImageButtonClick_opensGalleryAndDisplaysImage()">
         <State />
       </entry>
     </value>
