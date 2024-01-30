@@ -1,11 +1,14 @@
 package com.example.smartocr;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -15,9 +18,16 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
+import com.example.smartocr.worker.ImageProcessingWorker;
+
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,13 +55,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void openGallery() {
         // Check if the app has the required permission
-        if (checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+        if ((checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             // Permission already granted, open the gallery
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
         } else {
             // Permission not granted, request it
-            requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES}, PERMISSION_REQUEST_CODE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            }
+            else {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            }
         }
     }
 
@@ -78,8 +94,13 @@ public class MainActivity extends AppCompatActivity {
                 // Load the selected image using Android SDK
                 Uri imageUri = data.getData();
                 try {
-                    InputStream inputStream = getContentResolver().openInputStream(imageUri);
-                    Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream);
+                    Bitmap selectedBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+
+                    // Save the selected image to a file
+                    String imagePath = saveImageToFile(selectedBitmap);
+
+                    // Pass the file path to the worker for processing
+                    processImageInBackground(imagePath);
 
                     // Display the selected image in the ImageView
                     imageView.setImageBitmap(selectedBitmap);
@@ -89,4 +110,44 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    private void processImageInBackground(String imagePath) {
+        // Create a Data object with the file path
+        Data inputData = new Data.Builder()
+                .putString("imagePath", imagePath)
+                .build();
+
+        // Create a OneTimeWorkRequest for ImageProcessingWorker
+        OneTimeWorkRequest imageProcessingRequest =
+                new OneTimeWorkRequest.Builder(ImageProcessingWorker.class)
+                        .setInputData(inputData)
+                        .build();
+
+        // Enqueue the work request
+        WorkManager.getInstance(this).enqueue(imageProcessingRequest);
+    }
+
+    private String saveImageToFile(Bitmap imageBitmap) {
+        // Get the Downloads directory
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+        // Generate a unique file name with the format "smartocr_currenttimestamp.jpg"
+        String fileName = "smartocr_" + System.currentTimeMillis() + ".jpg";
+
+        // Create a file in the Downloads directory
+        File imageFile = new File(downloadsDir, fileName);
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.close();
+            return imageFile.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
 }

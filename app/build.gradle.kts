@@ -44,6 +44,13 @@ android {
 }
 
 dependencies {
+    val work_version = "2.9.0"
+
+    // (Java only)
+    implementation("androidx.work:work-runtime:$work_version")
+    // optional - Test helpers
+    androidTestImplementation("androidx.work:work-testing:$work_version")
+
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

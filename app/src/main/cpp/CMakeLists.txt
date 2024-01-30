@@ -26,7 +26,10 @@ project("smartocr")
 # used in the AndroidManifest.xml file.
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
-        native-lib.cpp)
+        smartocr.cpp)
+
+set(OpenCV_DIR "~/Downloads/OpenCV-android-sdk/sdk/native/jni")
+find_package(OpenCV REQUIRED)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this
@@ -34,4 +37,5 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
 target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
         android
+        opencv_java
         log)
