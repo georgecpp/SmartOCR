@@ -19,20 +19,17 @@ Java_com_example_smartocr_jni_SmartOCR_1JNI_applySauvolaThreshold(JNIEnv *env, j
         return JNI_FALSE;
     }
 
-    // Apply Sauvola thresholding algorithm (you need to implement this)
-    // SauvolaThreshold(img, img);
+    // Apply Sauvola thresholding algorithm
+    double k = 0.3;
+    int windowSize = 25;
+    adaptiveThreshold(img, img, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, windowSize, k);
 
-//    // Get the Downloads directory
-//    std::string downloadsDir = "/storage/emulated/0/Download/"; // Modify this path as needed
-//
-//    // Save the processed image in the Downloads directory
-//    std::string outputPath = downloadsDir + "image_cpp.jpg";
-//    bool success = imwrite(outputPath, img);
-//
-//    // Release the allocated memory for the path string
-//    env->ReleaseStringUTFChars(imagePath, path);
-//
-//    // Return true if the image was saved successfully, otherwise false
-//    return success ? JNI_TRUE : JNI_FALSE;
-    return JNI_TRUE;
+    // Save the processed image to the same file
+    bool success = imwrite(path, img);
+
+    // Release the allocated memory for the path string
+    env->ReleaseStringUTFChars(imagePath, path);
+
+    // Return true if the image was processed and saved successfully, otherwise false
+    return success ? JNI_TRUE : JNI_FALSE;
 }
