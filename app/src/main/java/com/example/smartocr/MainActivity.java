@@ -1,7 +1,9 @@
 package com.example.smartocr;
 
-import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,16 +16,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
-
 import com.example.smartocr.worker.ImageProcessingWorker;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -35,7 +35,22 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 2;
 
     private ImageView imageView;
-    private Button selectImageButton;
+
+    private BroadcastReceiver processingResultReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean result = intent.getBooleanExtra(ImageProcessingWorker.EXTRA_RESULT, false);
+            if (result) {
+                // Processing succeeded, update image in ImageView
+                String imagePath = intent.getStringExtra("imagePath");
+                Bitmap processedBitmap = BitmapFactory.decodeFile(imagePath);
+                imageView.setImageBitmap(processedBitmap);
+            } else {
+                // Processing failed, show toast
+                Toast.makeText(MainActivity.this, "Image Processing failed...", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         imageView = findViewById(R.id.imageView);
-        selectImageButton = findViewById(R.id.selectImageButton);
+        Button selectImageButton = findViewById(R.id.selectImageButton);
 
         selectImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,22 +66,32 @@ public class MainActivity extends AppCompatActivity {
                 openGallery();
             }
         });
+
+        // Register the broadcast receiver
+        IntentFilter filter = new IntentFilter(ImageProcessingWorker.ACTION_PROCESSING_RESULT);
+        registerReceiver(processingResultReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Unregister the broadcast receiver
+        unregisterReceiver(processingResultReceiver);
     }
 
     private void openGallery() {
         // Check if the app has the required permission
-        if ((checkSelfPermission(Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        if ((checkSelfPermission(android.Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED || checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+                && checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             // Permission already granted, open the gallery
             Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
         } else {
             // Permission not granted, request it
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-            }
-            else {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+                requestPermissions(new String[]{android.Manifest.permission.READ_MEDIA_IMAGES, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+            } else {
+                requestPermissions(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
             }
         }
     }
@@ -147,7 +172,4 @@ public class MainActivity extends AppCompatActivity {
         }
         return null;
     }
-
-
-
 }

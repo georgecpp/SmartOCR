@@ -1,15 +1,18 @@
 package com.example.smartocr.worker;
 
 import android.content.Context;
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.example.smartocr.jni.SmartOCR_JNI;
 
-import java.io.File;
-
 public class ImageProcessingWorker extends Worker {
+
+    public static final String ACTION_PROCESSING_RESULT = "com.example.smartocr.ACTION_PROCESSING_RESULT";
+    public static final String EXTRA_RESULT = "result";
 
     public ImageProcessingWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -20,11 +23,21 @@ public class ImageProcessingWorker extends Worker {
     public Result doWork() {
         // Get the file path from input data
         String imagePath = getInputData().getString("imagePath");
+
         // Perform image processing using JNI
         boolean sauvolaThresholdApplied = SmartOCR_JNI.applySauvolaThreshold(imagePath);
 
-        // Handle the processed image result (e.g., update UI, save to storage, etc.)
-        // ...
+        // Send broadcast with the processing result and imagePath
+        sendResultBroadcast(sauvolaThresholdApplied, imagePath);
+
+        // Return success or failure based on processing result
         return sauvolaThresholdApplied ? Result.success() : Result.failure();
+    }
+
+    private void sendResultBroadcast(boolean result, String imagePath) {
+        Intent intent = new Intent(ACTION_PROCESSING_RESULT);
+        intent.putExtra(EXTRA_RESULT, result);
+        intent.putExtra("imagePath", imagePath); // Include the imagePath in the broadcast
+        getApplicationContext().sendBroadcast(intent);
     }
 }
