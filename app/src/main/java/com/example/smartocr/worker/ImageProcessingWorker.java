@@ -34,7 +34,7 @@ public class ImageProcessingWorker extends Worker {
         return sauvolaThresholdApplied ? Result.success() : Result.failure();
     }
 
-    private void sendResultBroadcast(boolean result, String imagePath) {
+    public void sendResultBroadcast(boolean result, String imagePath) {
         Intent intent = new Intent(ACTION_PROCESSING_RESULT);
         intent.putExtra(EXTRA_RESULT, result);
         intent.putExtra("imagePath", imagePath); // Include the imagePath in the broadcast

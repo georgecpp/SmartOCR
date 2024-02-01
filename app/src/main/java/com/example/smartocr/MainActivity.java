@@ -23,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
+
+import com.example.smartocr.util.ImageUtils;
 import com.example.smartocr.worker.ImageProcessingWorker;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap selectedBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
 
                     // Save the selected image to a file
-                    String imagePath = saveImageToFile(selectedBitmap);
+                    String imagePath = ImageUtils.saveImageToFile(selectedBitmap);
 
                     // Pass the file path to the worker for processing
                     processImageInBackground(imagePath);
@@ -150,26 +152,5 @@ public class MainActivity extends AppCompatActivity {
 
         // Enqueue the work request
         WorkManager.getInstance(this).enqueue(imageProcessingRequest);
-    }
-
-    private String saveImageToFile(Bitmap imageBitmap) {
-        // Get the Downloads directory
-        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-
-        // Generate a unique file name with the format "smartocr_currenttimestamp.jpg"
-        String fileName = "smartocr_" + System.currentTimeMillis() + ".jpg";
-
-        // Create a file in the Downloads directory
-        File imageFile = new File(downloadsDir, fileName);
-
-        try {
-            FileOutputStream outputStream = new FileOutputStream(imageFile);
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            outputStream.close();
-            return imageFile.getAbsolutePath();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

@@ -49,7 +49,7 @@ dependencies {
     // (Java only)
     implementation("androidx.work:work-runtime:$work_version")
     // optional - Test helpers
-    androidTestImplementation("androidx.work:work-testing:$work_version")
+    implementation("androidx.work:work-testing:$work_version")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
@@ -57,6 +57,7 @@ dependencies {
 
     // JUnit dependencies
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:5.10.0")
 
     // Espresso dependencies
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
