@@ -22,7 +22,7 @@ import com.example.smartocr.worker.ImageProcessingWorker;
 public class ImageProcessingWorkerTest {
 
     @Test
-    public void testDoWork_Success() throws ExecutionException, InterruptedException {
+    public void testDoWork_Success() {
         // Generate a test image bitmap
         Bitmap testBitmap = ImageUtils.generateTestBitmap();
 
