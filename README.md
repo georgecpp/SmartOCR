@@ -5,7 +5,7 @@ SmartOCR is an Android Native app that leverages the power of NDK (C++) for adva
 
 <h1>Features 🚀</h1>
 
-- NDK-powered Processing: SmartOCR extensively uses the NDK for robust image preprocessing.
+- NDK-powered Processing: SmartOCR extensively uses the NDK for optimized image preprocessing.
 
 - Sauvola Thresholding: The app applies Sauvola Thresholding to enhance OCR results by effectively binarizing images.
 
@@ -17,4 +17,4 @@ SmartOCR is an Android Native app that leverages the power of NDK (C++) for adva
 
 - Tesseract OCR: Integrates the powerful Tesseract OCR engine for accurate text recognition.
 
-- Testing with Espresso: Comprehensive testing using Espresso to ensure robust functionality.
+- Unit & Instrumented tests with Espresso, Mockito, JUnit & AndroidX frameworks
