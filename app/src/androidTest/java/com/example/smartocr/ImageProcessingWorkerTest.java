@@ -11,9 +11,8 @@ import androidx.work.testing.TestListenableWorkerBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.ExecutionException;
-
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import com.example.smartocr.util.ImageUtils;
 import com.example.smartocr.worker.ImageProcessingWorker;
@@ -43,6 +42,59 @@ public class ImageProcessingWorkerTest {
 
         // Assert that the result is success
         assertEquals(ListenableWorker.Result.success(), result);
+    }
+
+    @Test
+    public void testDoWork_Failure() {
+        // Create input data with an invalid image path
+        Data inputData = new Data.Builder().putString("imagePath", "invalid_path").build();
+
+        // Use TestListenableWorkerBuilder to create the worker
+        ImageProcessingWorker worker = TestListenableWorkerBuilder.from(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                ImageProcessingWorker.class
+        ).setInputData(inputData).build();
+
+        // Start the worker synchronously
+        ListenableWorker.Result result = worker.doWork();
+
+        // Assert that the result is failure
+        assertNotEquals(ListenableWorker.Result.success(), result);
+    }
+
+    @Test
+    public void testDoWork_EmptyInputData() {
+        // Create empty input data
+        Data inputData = new Data.Builder().build();
+
+        // Use TestListenableWorkerBuilder to create the worker
+        ImageProcessingWorker worker = TestListenableWorkerBuilder.from(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                ImageProcessingWorker.class
+        ).setInputData(inputData).build();
+
+        // Start the worker synchronously
+        ListenableWorker.Result result = worker.doWork();
+
+        // Assert that the result is failure because input data is required
+        assertEquals(ListenableWorker.Result.failure(), result);
+    }
+
+    @Test
+    public void testDoWork_NoInputData() {
+        // Do not provide any input data
+
+        // Use TestListenableWorkerBuilder to create the worker
+        ImageProcessingWorker worker = TestListenableWorkerBuilder.from(
+                InstrumentationRegistry.getInstrumentation().getTargetContext(),
+                ImageProcessingWorker.class
+        ).build();
+
+        // Start the worker synchronously
+        ListenableWorker.Result result = worker.doWork();
+
+        // Assert that the result is failure because input data is required
+        assertEquals(ListenableWorker.Result.failure(), result);
     }
 
 }
