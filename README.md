@@ -9,7 +9,7 @@ SmartOCR is an Android Native app that leverages the power of NDK (C++) for adva
 
 - Sauvola Thresholding: The app applies Sauvola Thresholding to enhance OCR results by effectively binarizing images.
 
-- Tesseract OCR Integration: Seamlessly integrates with the Tesseract OCR engine for accurate and powerful optical character recognition.
+- Tesseract OCR Integration: Seamlessly integrates with the Tesseract OCR engine for accurate and fast optical character recognition.
 
 <h1>Tech Stack 💻</h1>
 
