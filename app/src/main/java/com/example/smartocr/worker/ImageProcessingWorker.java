@@ -24,6 +24,12 @@ public class ImageProcessingWorker extends Worker {
         // Get the file path from input data
         String imagePath = getInputData().getString("imagePath");
 
+        // Check if imagePath is null
+        if (imagePath == null) {
+            // Log an error or handle the situation as appropriate
+            return Result.failure();
+        }
+
         // Perform image processing using JNI
         boolean sauvolaThresholdApplied = SmartOCR_JNI.applySauvolaThreshold(imagePath);
 
