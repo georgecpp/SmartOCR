@@ -13,8 +13,8 @@ SmartOCR is an Android Native app that leverages the power of NDK (C++) for adva
 
 <h1>Tech Stack 💻</h1>
 
-- Android Native Development: Utilizes Android Native Development Kit (NDK) for efficient C++ processing.
+- Android Native Development: Utilizes Android Native Development Kit (NDK) for efficient C++ processing
 
 - Tesseract OCR: Integrates the powerful Tesseract OCR engine for accurate text recognition.
 
-- Unit & Instrumented tests with Espresso, Mockito, JUnit & AndroidX frameworks
+- Unit & Instrumented tests with Espresso, Mockito, JUnit & AndroidX frameworks.
