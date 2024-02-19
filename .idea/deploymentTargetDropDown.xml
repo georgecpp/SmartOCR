@@ -8,16 +8,7 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="testDoWork_EmptyInputData()">
-        <State />
-      </entry>
-      <entry key="testDoWork_Failure()">
-        <State />
-      </entry>
       <entry key="testDoWork_NoInputData()">
-        <State />
-      </entry>
-      <entry key="testDoWork_Success()">
         <State />
       </entry>
     </value>

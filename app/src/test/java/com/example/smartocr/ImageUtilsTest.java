@@ -6,13 +6,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.io.File;
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
-import com.example.smartocr.util.ImageUtils;
-
 public class ImageUtilsTest {
 
     @Mock
