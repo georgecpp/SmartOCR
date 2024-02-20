@@ -5,6 +5,7 @@ plugins {
 android {
     namespace = "com.example.smartocr"
     compileSdk = 34
+    ndkVersion = "25.1.8937393"
 
     defaultConfig {
         applicationId = "com.example.smartocr"
@@ -23,6 +24,17 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            externalNativeBuild {
+                cmake {
+                    // Force building release version of native libraries even in debug variant.
+                    // This is for projects that has direct dependency on this library,
+                    // but doesn't really want its debug version, which is very slow.
+                    // Note that this only affects native code.
+                    arguments("-DCMAKE_BUILD_TYPE=Release")
+                }
+            }
         }
     }
 

@@ -33,3 +33,4 @@ Java_com_example_smartocr_jni_SmartOCR_1JNI_applySauvolaThreshold(JNIEnv *env, j
     // Return true if the image was processed and saved successfully, otherwise false
     return success ? JNI_TRUE : JNI_FALSE;
 }
+
