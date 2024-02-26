@@ -14,6 +14,8 @@ public class ImageProcessingWorker extends Worker {
     public static final String ACTION_PROCESSING_RESULT = "com.example.smartocr.ACTION_PROCESSING_RESULT";
     public static final String EXTRA_RESULT = "result";
 
+    public static final String EXTRA_IMAGE_PATH = "imagePath";
+
     public ImageProcessingWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
     }
@@ -43,7 +45,7 @@ public class ImageProcessingWorker extends Worker {
     public void sendResultBroadcast(boolean result, String imagePath) {
         Intent intent = new Intent(ACTION_PROCESSING_RESULT);
         intent.putExtra(EXTRA_RESULT, result);
-        intent.putExtra("imagePath", imagePath); // Include the imagePath in the broadcast
+        intent.putExtra(EXTRA_IMAGE_PATH, imagePath); // Include the imagePath in the broadcast
         getApplicationContext().sendBroadcast(intent);
     }
 }
