@@ -13,7 +13,6 @@ public class ImageProcessingWorker extends Worker {
 
     public static final String ACTION_PROCESSING_RESULT = "com.example.smartocr.ACTION_PROCESSING_RESULT";
     public static final String EXTRA_RESULT = "result";
-
     public static final String EXTRA_IMAGE_PATH = "imagePath";
 
     public ImageProcessingWorker(@NonNull Context context, @NonNull WorkerParameters params) {
